@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -29,18 +29,29 @@ async function run() {
     const itemCollection = client.db('itemDB').collection('item')
 
 
-    app.get('/item',async(req,res)=>{
+    app.get('/item', async (req, res) => {
       const cursor = itemCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
+    app.get('/item/:email', async (req, res) => {
+      const email = (req.params.email);
+      const cursor = itemCollection.find({ email: email });
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
-    app.post('/item', async(req,res)=>{
-        const newItem = req.body;
-        console.log(newItem);
-        const result = await itemCollection.insertOne(newItem);
-        res.send(result);
+    app.get('/singleItem/:id', async (req, res) => {
+      const result = await itemCollection.findOne({_id: new ObjectId(req.params.id)})
+      res.send(result)
+    })
+
+    app.post('/item', async (req, res) => {
+      const newItem = req.body;
+      console.log(newItem);
+      const result = await itemCollection.insertOne(newItem);
+      res.send(result);
     })
 
 
@@ -57,10 +68,10 @@ run().catch(console.dir);
 
 
 
-app.get('/',(req,res)=>{
-    res.send('ThreadCrafts-Haven server is running')
+app.get('/', (req, res) => {
+  res.send('ThreadCrafts-Haven server is running')
 })
 
-app.listen(port,()=>{
-    console.log(`ThreadCrafts-Haven server is running on port: ${port}`)
+app.listen(port, () => {
+  console.log(`ThreadCrafts-Haven server is running on port: ${port}`)
 })
