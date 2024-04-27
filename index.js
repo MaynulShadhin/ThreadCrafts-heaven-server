@@ -24,12 +24,32 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+
+    const itemCollection = client.db('itemDB').collection('item')
+
+
+    app.get('/item',async(req,res)=>{
+      const cursor = itemCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    app.post('/item', async(req,res)=>{
+        const newItem = req.body;
+        console.log(newItem);
+        const result = await itemCollection.insertOne(newItem);
+        res.send(result);
+    })
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
@@ -42,5 +62,5 @@ app.get('/',(req,res)=>{
 })
 
 app.listen(port,()=>{
-    console.log(`Coffee server is running on port: ${port}`)
+    console.log(`ThreadCrafts-Haven server is running on port: ${port}`)
 })
