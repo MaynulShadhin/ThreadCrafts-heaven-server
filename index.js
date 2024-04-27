@@ -43,7 +43,7 @@ async function run() {
     })
 
     app.get('/singleItem/:id', async (req, res) => {
-      const result = await itemCollection.findOne({_id: new ObjectId(req.params.id)})
+      const result = await itemCollection.findOne({ _id: new ObjectId(req.params.id) })
       res.send(result)
     })
 
@@ -51,6 +51,35 @@ async function run() {
       const newItem = req.body;
       console.log(newItem);
       const result = await itemCollection.insertOne(newItem);
+      res.send(result);
+    })
+
+    app.put('/singleItem/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedItem = req.body
+      const item = {
+        $set: {
+          name: updatedItem.name,
+          subcategory: updatedItem.subcategory,
+          description: updatedItem.description,
+          price: updatedItem.price,
+          rating: updatedItem.rating,
+          customization: updatedItem.customization,
+          time: updatedItem.time,
+          stock: updatedItem.stock,
+          image: updatedItem.image
+        }
+      }
+      const result = await itemCollection.updateOne(filter, item, options)
+      res.send(result)
+    })
+
+    app.delete('/singleItem/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await itemCollection.deleteOne(query);
       res.send(result);
     })
 
