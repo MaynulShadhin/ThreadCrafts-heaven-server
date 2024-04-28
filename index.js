@@ -58,7 +58,7 @@ async function run() {
       const subcategory = req.params.subcategory
       const cursor = itemCollection.find({subcategory:subcategory});
       const result = await cursor.toArray();
-      res.send(result);
+      // res.send(result);
     })
 
     app.post('/item', async (req, res) => {
