@@ -27,6 +27,7 @@ async function run() {
 
 
     const itemCollection = client.db('itemDB').collection('item')
+    const subcategoryCollection = client.db('itemDB').collection('subcategory')
 
 
     app.get('/item', async (req, res) => {
@@ -44,6 +45,12 @@ async function run() {
 
     app.get('/singleItem/:id', async (req, res) => {
       const result = await itemCollection.findOne({ _id: new ObjectId(req.params.id) })
+      res.send(result)
+    })
+
+    app.get('/subcategory', async(req,res)=>{
+      const cursor = subcategoryCollection.find()
+      const result = await cursor.toArray();
       res.send(result)
     })
 
