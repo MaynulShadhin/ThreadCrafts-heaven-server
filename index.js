@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
 
     const itemCollection = client.db('itemDB').collection('item')
@@ -52,6 +52,13 @@ async function run() {
       const cursor = subcategoryCollection.find()
       const result = await cursor.toArray();
       res.send(result)
+    })
+
+    app.get('/subcategory/:subcategory', async(req,res)=>{
+      const subcategory = req.params.subcategory
+      const cursor = itemCollection.find({subcategory:subcategory});
+      const result = await cursor.toArray();
+      res.send(result);
     })
 
     app.post('/item', async (req, res) => {
